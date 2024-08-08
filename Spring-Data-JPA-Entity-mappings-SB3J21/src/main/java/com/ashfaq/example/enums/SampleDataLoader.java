@@ -30,8 +30,8 @@ public class SampleDataLoader implements CommandLineRunner {
         order3.setStatus(OrderStatus.COMPLETED);
         order3.setAmount(199.99);
 
-        orderRepository.save(order1);
-        orderRepository.save(order2);
-        orderRepository.save(order3);
+//        orderRepository.save(order1);
+//        orderRepository.save(order2);
+//        orderRepository.save(order3);
     }
 }

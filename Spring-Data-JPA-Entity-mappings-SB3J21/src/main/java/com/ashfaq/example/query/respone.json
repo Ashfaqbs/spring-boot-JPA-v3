@@ -1,0 +1,198 @@
+//http://localhost:8080/mango-employees/searchv1?departmentId=1&employeeIds=1,2,3&names=Alice,Bob
+
+[
+    {
+        "id": 1,
+        "name": "Alice",
+        "departmentId": 1
+    },
+    {
+        "id": 2,
+        "name": "Bob",
+        "departmentId": 1
+    }
+]
+
+
+
+
+//Pageable 
+
+//http://localhost:8080/mango-employees/searchv2?departmentId=1&employeeIds=1,2,3&names=Alice,Bob&page=0&size=3
+
+{
+    "totalElements": 2,
+    "totalPages": 1,
+    "size": 3,
+    "content": [
+        {
+            "id": 1,
+            "name": "Alice",
+            "departmentId": 1
+        },
+        {
+            "id": 2,
+            "name": "Bob",
+            "departmentId": 1
+        }
+    ],
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "last": true,
+    "numberOfElements": 2,
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 3,
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "empty": false
+}
+
+
+//Pageable with optionals
+
+
+
+//	    With all parameters:    
+//http://localhost:8080/mango-employees/searchv3?departmentId=1&employeeIds=1,2,3&names=Alice,Bob&page=0&size=3
+
+{
+    "totalElements": 2,
+    "totalPages": 1,
+    "size": 20,
+    "content": [
+        {
+            "id": 1,
+            "name": "Alice",
+            "departmentId": 1
+        },
+        {
+            "id": 2,
+            "name": "Bob",
+            "departmentId": 1
+        }
+    ],
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "last": true,
+    "numberOfElements": 2,
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 20,
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "empty": false
+}
+
+
+
+//	    Without names:
+//http://localhost:8080/mango-employees/searchv3?departmentId=1&employeeIds=1,2,3&page=0&size=3
+
+{
+    "totalElements": 2,
+    "totalPages": 1,
+    "size": 20,
+    "content": [
+        {
+            "id": 1,
+            "name": "Alice",
+            "departmentId": 1
+        },
+        {
+            "id": 2,
+            "name": "Bob",
+            "departmentId": 1
+        }
+    ],
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "last": true,
+    "numberOfElements": 2,
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 20,
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "empty": false
+}
+
+
+//	    Without employeeIds and names:
+//http://localhost:8080/mango-employees/searchv3?departmentId=3&page=0&size=3
+
+{
+    "totalElements": 2,
+    "totalPages": 1,
+    "size": 20,
+    "content": [
+        {
+            "id": 5,
+            "name": "Eve",
+            "departmentId": 3
+        },
+        {
+            "id": 6,
+            "name": "Frank",
+            "departmentId": 3
+        }
+    ],
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "last": true,
+    "numberOfElements": 2,
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 20,
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "empty": false
+}

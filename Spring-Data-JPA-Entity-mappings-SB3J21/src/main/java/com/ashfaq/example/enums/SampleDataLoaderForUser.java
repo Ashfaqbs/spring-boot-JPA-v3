@@ -42,7 +42,7 @@ class SampleDataLoaderForUser implements CommandLineRunner {
       user.setPassword("user123");
       user.setRoles(userRoles);
 
-      userRepository.save(admin);
-      userRepository.save(user);
+//      userRepository.save(admin);
+//      userRepository.save(user);
   }
 }
