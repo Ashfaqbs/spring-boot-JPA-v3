@@ -59,7 +59,8 @@ public class MangoEmployeeController {
 //	    Without employeeIds and names:
 //http://localhost:8080/mango-employees/searchv3?departmentId=3&page=0&size=3
     
-	    
+	  //Feature COALESCE  query with optional parameters
+	     
 	    @GetMapping("/searchv3")
 	    public Page<MangoEmploye> searchMangoEmployees(
 	        @RequestParam Long departmentId,
@@ -71,6 +72,19 @@ public class MangoEmployeeController {
 	    }  
 	    
 //	    NULL VALUES:
+//	    With null departmentId:
+//	    http://localhost:8080/mango-employees/searchv4?employeeIds=1,2,3&names=Alice,Bob&page=0&size=3
+//	    With all parameters:
+//	  http://localhost:8080/mango-employees/searchv2?departmentId=1&employeeIds=1,2,3&names=Alice,Bob&page=0&size=3
+//	    Without names:
+//	    http://localhost:8080/mango-employees/searchv2?departmentId=1&employeeIds=1,2,3&page=0&size=3
+//	    Without employeeIds and names:
+//	    http://localhost:8080/mango-employees/searchv2?departmentId=1&page=0&size=3
+
+	    
+
+//	    NULL Values 
+	    
 	    @GetMapping("/searchv4")
 	    public Page<MangoEmploye> searchEmployeesNullhandeled(
 	        @RequestParam(required = false) Long departmentId,

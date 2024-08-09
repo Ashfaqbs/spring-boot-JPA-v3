@@ -25,14 +25,14 @@ public class MangoEmployeeService {
 	        return employeeRepository.findByDepartmentIdAndEmployeeIdsAndNamesAndPageable(departmentId, employeeIds, names, pageable);
 	    }
 	    
-	    //query with optional parameters
+	    //Feature COALESCE  query with optional parameters
 	    
 	    public Page<MangoEmploye> getMangoEmployeesOptional(Long departmentId, List<Long> employeeIds, List<String> names, Pageable pageable) {
 	        return employeeRepository.findByDepartmentIdAndOptionalParams(departmentId, employeeIds, names, pageable);
 	    }
 	    
 	    
-//	    Null 
+//	    NULL Values 
 	    
 	    public Page<MangoEmploye> getEmployees(Long departmentId, List<Long> employeeIds, List<String> names, Pageable pageable) {
 	        return employeeRepository.findBydata(departmentId, employeeIds, names, pageable);
