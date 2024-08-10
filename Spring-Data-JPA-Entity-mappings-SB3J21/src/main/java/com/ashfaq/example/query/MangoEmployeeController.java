@@ -71,6 +71,26 @@ public class MangoEmployeeController {
 	    }
 
 	    
+	    
+	    //Same as above with entity manager and pagination
+	    
+//	    http://localhost:8080/mango-employees/searchv1-with-entity-manager-pagination?departmentId=1&employeeIds=1,2,3&names=Alice,Bob&pageNumber=0&pageSize=10	    @GetMapping("/searchv1-with-entity-manager-pagination")
+	    public List<MangoEmploye> searchEmployeesByentityManagerPagination( 
+	        @RequestParam(required = false) Long departmentId,
+	        @RequestParam List<Long> employeeIds,
+	        @RequestParam List<String> names, 
+	        int pageNumber, int pageSize
+	    ) {
+	        return customMangoEmployeRepositoryImpl.findByDepartmentIdAndEmployeeIdsAndNamesByEntityManager(departmentId, employeeIds, names, pageNumber, pageSize);
+	    }
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 //	    With all parameters:    
 //http://localhost:8080/mango-employees/searchv3?departmentId=1&employeeIds=1,2,3&names=Alice,Bob&page=0&size=3
 //	    Without names:

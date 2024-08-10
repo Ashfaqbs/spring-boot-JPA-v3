@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 @Repository
 public class CustomMangoEmployeRepositoryImpl  {
@@ -83,6 +84,25 @@ public class CustomMangoEmployeRepositoryImpl  {
 ]
  */
     
+	    
+	    
+	    //Pagination
+	    
+	    public List<MangoEmploye> findByDepartmentIdAndEmployeeIdsAndNamesByEntityManager(Long departmentId, List<Long> employeeIds, List<String> names, int pageNumber, int pageSize) {
+	
+	        int firstResult = pageNumber * pageSize;
+	        
+	    	List<MangoEmploye> resultList = entityManager.createQuery(query, MangoEmploye.class).
+	        // Set parameters
+	        setParameter("departmentId", departmentId).
+	        setParameter("employeeIds", employeeIds).
+	        setParameter("names", names).
+	        // Apply pagination
+	        setFirstResult(firstResult).
+	        setMaxResults(pageSize).getResultList();
+	        
+	        return resultList;
+	    }  	
     
     
 }
