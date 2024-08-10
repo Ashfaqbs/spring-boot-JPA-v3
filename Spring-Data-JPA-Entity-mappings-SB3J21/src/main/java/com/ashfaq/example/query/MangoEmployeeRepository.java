@@ -2,25 +2,49 @@ package com.ashfaq.example.query;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 public interface MangoEmployeeRepository extends JpaRepository<MangoEmploye	, Long> {
 
-	
+
+//	1  hard coded query
 	 @Query("""
 			SELECT e FROM MangoEmploye e WHERE e.departmentId = :departmentId AND e.id IN :employeeIds AND e.name IN :names
 			
 			""")
-	    List<MangoEmploye> findByDepartmentIdAndEmployeeIdsAndNames(
+	 
+	 
+	 /*** Externalized Query Doesnot Work
+	  	
+//	externalized query not working
+//	2
+//	@Value("${mango.employee.query}")
+//	private String mangoEmployeeQuery;
+//  	@Query("${mango.employee.query}") //Error seen The error message indicates that HQL (Hibernate Query Language) is not able to parse the query because of the ${...} syntax, which is used for property placeholders in Spring Boot.
+
+//3 
+//	String MANGO_EMPLOYEE_QUERY = "${mango.employee.query}";
+//    @Query(MANGO_EMPLOYEE_QUERY)	//this won't work as expected because the ${...} syntax is not evaluated in interfaces.
+	
+	Note:  if we want to use externalized query then  We can use a entity manager may work if we have to externalize the query  
+	 used in CustomMangoEmployeRepositoryImpl class
+	
+	
+	  */
+//using the hardcoded here	 
+	List<MangoEmploye> findByDepartmentIdAndEmployeeIdsAndNames(
 	        @Param("departmentId") Long departmentId,
 	        @Param("employeeIds") List<Long> employeeIds,
 	        @Param("names") List<String> names
 	    );	
+	 
 	 
 	 
 //	 Pagination

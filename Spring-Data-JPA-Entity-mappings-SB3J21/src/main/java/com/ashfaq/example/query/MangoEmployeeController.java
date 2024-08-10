@@ -20,6 +20,10 @@ public class MangoEmployeeController {
 	
 	 @Autowired
 	    private MangoEmployeeService  memployeeService;
+	 
+	 
+	 @Autowired
+	    private CustomMangoEmployeRepositoryImpl  customMangoEmployeRepositoryImpl;
 
 	    @GetMapping
 	    public List<MangoEmploye> getAllEmployees() {
@@ -29,15 +33,30 @@ public class MangoEmployeeController {
 	    
 	    
 //		   http://localhost:8080/mango-employees/searchv1?departmentId=1&employeeIds=1,2,3&names=Alice,Bob
+	    
+//	    AND http://localhost:8080/mango-employees/searchv1?employeeIds=1,2,3&names=Alice,Bob when dept not passsed empty object
 	    @GetMapping("/searchv1")
-	    public List<MangoEmploye> searchEmployees(
-	        @RequestParam Long departmentId,
+	    public List<MangoEmploye> searchEmployees( 
+	        @RequestParam(required = false) Long departmentId,
 	        @RequestParam List<Long> employeeIds,
 	        @RequestParam List<String> names
 	    ) {
 	        return memployeeService.getEmployees(departmentId, employeeIds, names);
 	    }
-
+	    
+	    
+	    //Same as above with entity manager 
+  
+//	    http://localhost:8080/mango-employees/searchv1-with-entity-manager?departmentId=1&employeeIds=1,2,3&names=Alice,Bob 
+	    @GetMapping("/searchv1-with-entity-manager")
+	    public List<MangoEmploye> searchEmployeesByentityManager( 
+	        @RequestParam(required = false) Long departmentId,
+	        @RequestParam List<Long> employeeIds,
+	        @RequestParam List<String> names
+	    ) {
+	        return customMangoEmployeRepositoryImpl.findByDepartmentIdAndEmployeeIdsAndNamesByEntityManager(departmentId, employeeIds, names);
+	    }
+	    
 	    
 	    
 //	    http://localhost:8080/mango-employees/searchv2?departmentId=1&employeeIds=1,2,3&names=Alice,Bob&page=0&size=10    
