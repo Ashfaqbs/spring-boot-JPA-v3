@@ -26,8 +26,12 @@ public class CustomMangoEmployeRepositoryImpl  {
 	                 .getResultList();
 	        
 	        
-	        
-	        /***
+	/**
+note directly assign to List<MangoEmploye> and return it  or return it directly 
+	 ** /     
+
+
+ /*** while doing can observe typecasting/serialisation/loader exception 
 	         	      Always do a type safety check 
 
 	         
