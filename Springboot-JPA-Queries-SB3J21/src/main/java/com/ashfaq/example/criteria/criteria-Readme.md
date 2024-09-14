@@ -62,6 +62,13 @@ public class PersonRepositoryCustomImpl implements PersonRepositoryCustom {
 
 ```
 
+SQL eqvivalent :
+```
+SELECT * FROM person 
+WHERE name = :name AND age = :age 
+AND (address = :address OR school = :school OR color = :color);
+```
+
 service: 
 ```
 import org.springframework.beans.factory.annotation.Autowired;
