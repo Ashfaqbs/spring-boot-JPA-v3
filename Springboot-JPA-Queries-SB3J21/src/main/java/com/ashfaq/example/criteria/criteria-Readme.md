@@ -121,3 +121,232 @@ public class PersonController {
 
 Api url : GET http://localhost:8080/search?name=John&age=25&address=NY&school=Harvard&color=blue
 
+
+
+-- sample criteria 
+
+
+Let's break down your requirements:
+
+1. ID and class are mandatory fields – They will be used in an AND condition (both are required).
+
+
+2. Name, list of bikes, and list of cars are optional – These will be used in an OR condition (if any are present, they should be considered).
+
+
+
+We will build a search feature using the Criteria API based on these requirements:
+
+AND for mandatory fields (ID and class).
+
+OR for optional fields (name, bikes, cars).
+
+
+We'll pass everything as an entity to the service, then build the query using the Criteria API.
+
+
+---
+
+1. Entity Class: Person
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String personClass;  // Mandatory field
+
+    private String name;  // Optional field
+
+    @ElementCollection
+    private List<String> bikes;  // Optional field (list of bikes)
+
+    @ElementCollection
+    private List<String> cars;  // Optional field (list of cars)
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getPersonClass() { return personClass; }
+    public void setPersonClass(String personClass) { this.personClass = personClass; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public List<String> getBikes() { return bikes; }
+    public void setBikes(List<String> bikes) { this.bikes = bikes; }
+
+    public List<String> getCars() { return cars; }
+    public void setCars(List<String> cars) { this.cars = cars; }
+}
+
+
+---
+
+2. Custom Repository Method Using Criteria API
+
+Here we will create a method that builds the dynamic query:
+
+Custom Repository Interface:
+
+import java.util.List;
+
+public interface PersonRepositoryCustom {
+    List<Person> searchPerson(Person person);
+}
+
+Custom Repository Implementation:
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
+import org.springframework.stereotype.Repository;
+import java.util.ArrayList;
+import java.util.List;
+
+@Repository
+public class PersonRepositoryCustomImpl implements PersonRepositoryCustom {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<Person> searchPerson(Person person) {
+        // Step 1: Create CriteriaBuilder and CriteriaQuery
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Person> criteriaQuery = criteriaBuilder.createQuery(Person.class);
+
+        // Step 2: Define the Root (main entity)
+        Root<Person> root = criteriaQuery.from(Person.class);
+
+        // Step 3: Create a list to store predicates (conditions)
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Step 4: Add mandatory fields (AND condition)
+        Predicate idPredicate = criteriaBuilder.equal(root.get("id"), person.getId());
+        Predicate classPredicate = criteriaBuilder.equal(root.get("personClass"), person.getPersonClass());
+        Predicate andPredicate = criteriaBuilder.and(idPredicate, classPredicate);
+        predicates.add(andPredicate);
+
+        // Step 5: Create OR condition for optional fields
+        List<Predicate> orConditions = new ArrayList<>();
+        if (person.getName() != null && !person.getName().isEmpty()) {
+            orConditions.add(criteriaBuilder.equal(root.get("name"), person.getName()));
+        }
+        if (person.getBikes() != null && !person.getBikes().isEmpty()) {
+            orConditions.add(root.get("bikes").in(person.getBikes()));
+        }
+        if (person.getCars() != null && !person.getCars().isEmpty()) {
+            orConditions.add(root.get("cars").in(person.getCars()));
+        }
+
+        // Add OR predicates to the query if any exist
+        if (!orConditions.isEmpty()) {
+            Predicate orPredicate = criteriaBuilder.or(orConditions.toArray(new Predicate[0]));
+            predicates.add(orPredicate);
+        }
+
+        // Step 6: Set the predicates as the where clause of the query
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        // Step 7: Execute the query and return the results
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+}
+
+
+---
+
+3. Service Layer
+
+This service will accept the Person entity from the controller and pass it to the custom repository for querying.
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class PersonService {
+
+    @Autowired
+    private PersonRepositoryCustom personRepositoryCustom;
+
+    public List<Person> searchPerson(Person person) {
+        return personRepositoryCustom.searchPerson(person);
+    }
+}
+
+
+---
+
+4. Controller Layer
+
+This controller will receive the input via API call, create a Person object with the mandatory and optional fields, and pass it to the service for querying.
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/person")
+public class PersonController {
+
+    @Autowired
+    private PersonService personService;
+
+    @PostMapping("/search")
+    public List<Person> searchPerson(@RequestBody Person person) {
+        return personService.searchPerson(person);
+    }
+}
+
+
+---
+
+5. Sample Data and Request
+
+Sample Request Body:
+
+{
+    "id": 1,
+    "personClass": "ClassA",
+    "name": "John",
+    "bikes": ["Yamaha", "Honda"],
+    "cars": ["Tesla", "BMW"]
+}
+
+SQL Script to Add Data:
+
+INSERT INTO person (id, person_class, name)
+VALUES (1, 'ClassA', 'John');
+
+-- Assuming your bikes, cars are stored in a separate table due to @ElementCollection
+INSERT INTO person_bikes (person_id, bikes)
+VALUES (1, 'Yamaha'), (1, 'Honda');
+
+INSERT INTO person_cars (person_id, cars)
+VALUES (1, 'Tesla'), (1, 'BMW');
+
+
+---
+
+How it works:
+
+1. The ID and personClass are mandatory, and the query will filter the results based on these fields with an AND condition.
+
+
+2. The name, bikes, and cars are optional. If provided, the query will use an OR condition to match any of them.
+
+
+3. If no optional fields are provided, only the mandatory fields will be used for filtering.
+
+
+
