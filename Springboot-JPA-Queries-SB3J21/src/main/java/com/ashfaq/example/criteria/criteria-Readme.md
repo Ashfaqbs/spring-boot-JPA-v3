@@ -350,3 +350,184 @@ How it works:
 
 
 
+sample 02 
+
+
+
+
+
+
+
+
+1. Person entity contains fields like ID, name, class, bike, and car (all single variables, not lists).
+
+
+2. Request DTO will contain ID, name, class (single values) and lists of bikes and cars.
+
+
+
+Your goal is to take the request DTO, pass the data to a query, and fetch records from the database where:
+
+ID = the given ID.
+
+Name = the given name.
+
+Class = the given class.
+
+Bike is in the list of bikes.
+
+Car is in the list of cars.
+
+
+1. Person Entity
+
+The entity will be simple, with ID, name, personClass, bike, and car as single fields.
+
+import jakarta.persistence.*;
+
+@Entity
+public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String personClass;  // Mandatory
+
+    private String name;  // Optional
+
+    private String bike;  // Mandatory
+
+    private String car;  // Mandatory
+
+    // Getters and Setters
+    //...
+}
+
+2. Request DTO
+
+This DTO will contain lists for bikes and cars, as well as single values for ID, name, and class.
+
+import java.util.List;
+
+public class PersonRequestDTO {
+
+    private Long id;
+    private String name;
+    private String personClass;
+
+    private List<String> bikes;  // List of bikes to check against
+    private List<String> cars;   // List of cars to check against
+
+    // Getters and Setters
+    //...
+}
+
+3. Query with Criteria API
+
+You can now use the Criteria API to handle the case where bike and car should match any value in the lists provided in the PersonRequestDTO.
+
+Service Layer
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class PersonService {
+
+    private final EntityManager entityManager;
+
+    public PersonService(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public List<Person> findPersonsByCriteria(PersonRequestDTO requestDTO) {
+        // Start building the Criteria API
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Person> query = cb.createQuery(Person.class);
+        Root<Person> person = query.from(Person.class);
+
+        // Build the predicates (conditions)
+        Predicate idPredicate = cb.equal(person.get("id"), requestDTO.getId());
+        Predicate namePredicate = cb.equal(person.get("name"), requestDTO.getName());
+        Predicate classPredicate = cb.equal(person.get("personClass"), requestDTO.getPersonClass());
+
+        // For bikes and cars list, use "IN" clause
+        Predicate bikePredicate = person.get("bike").in(requestDTO.getBikes());
+        Predicate carPredicate = person.get("car").in(requestDTO.getCars());
+
+        // Combine predicates (AND for ID, name, and class), (OR for bikes and cars)
+        Predicate finalPredicate = cb.and(idPredicate, namePredicate, classPredicate);
+        Predicate vehiclePredicate = cb.or(bikePredicate, carPredicate);
+
+        // Final query where both conditions are applied
+        query.select(person).where(cb.and(finalPredicate, vehiclePredicate));
+
+        // Execute the query
+        return entityManager.createQuery(query)
+                            .setMaxResults(1000) // Limiting the result size
+                            .getResultList();
+    }
+}
+
+4. How It Works:
+
+1. ID, Name, and Class: These are mandatory, so we create predicates (idPredicate, namePredicate, and classPredicate) that check for exact matches.
+
+
+2. Bike and Car Lists: The in method is used to check if the bike and car are in the lists passed from the request DTO.
+
+
+3. Combining Conditions:
+
+AND is used for ID, name, and class.
+
+OR is used for the bike and car.
+
+
+
+4. Limiting the Results: We use setMaxResults(1000) to limit the number of results to 1000.
+
+
+
+5. Controller Layer
+
+Here's how you can call the service from a simple controller:
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/persons")
+public class PersonController {
+
+    private final PersonService personService;
+
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
+
+    @PostMapping("/search")
+    public List<Person> searchPersons(@RequestBody PersonRequestDTO requestDTO) {
+        return personService.findPersonsByCriteria(requestDTO);
+    }
+}
+
+6. SQL Equivalent Query (for reference):
+
+SELECT * 
+FROM person 
+WHERE id = ? 
+  AND name = ? 
+  AND person_class = ? 
+  AND (bike IN ('bike1', 'bike2', ...) OR car IN ('car1', 'car2', ...));
+
+This SQL query mirrors what the Criteria API is doing—matching ID, name, and class exactly, and checking if the bike or car belongs to the provided lists.
+
+
+---
+
