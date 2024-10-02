@@ -1,0 +1,111 @@
+api :  http://localhost:8080/students
+[
+{
+"id": 1,
+"name": "John Doe",
+"address": "123 Main St",
+"age": 25
+},
+{
+"id": 2,
+"name": "Jane Smith",
+"address": "456 Oak Ave",
+"age": 22
+},
+{
+"id": 3,
+"name": "Mike Johnson",
+"address": "789 Pine Rd",
+"age": 27
+},
+{
+"id": 4,
+"name": "Anna Lee",
+"address": "101 Maple St",
+"age": 24
+},
+{
+"id": 5,
+"name": "Paul Green",
+"address": "567 Birch St",
+"age": 29
+},
+{
+"id": 6,
+"name": "Linda White",
+"address": "890 Cedar Ave",
+"age": 30
+},
+{
+"id": 7,
+"name": "Emily Clark",
+"address": null,
+"age": 25
+},
+{
+"id": 8,
+"name": "Clark clent",
+"address": null,
+"age": 25
+}
+]
+
+
+
+
+
+
+Create API : http://localhost:8080/students
+
+Request  body :
+    {"name": "Clark clent", "email": "clent.clark@example.com", "age": 25}
+    
+    
+    Response :
+    
+    {
+    "id": 8,
+    "name": "Clark clent",
+    "address": null,
+    "age": 25
+}
+
+
+
+-- Triggers 
+
+http://localhost:8080/api/trigger-logs
+
+
+[
+{
+"id": 1,
+"actionType": "INSERT",
+"triggeredAt": "2024-10-02T19:04:18.267128",
+"description": "Inserted into students table, ID: 11"
+},
+{
+"id": 2,
+"actionType": "INSERT",
+"triggeredAt": "2024-10-02T19:04:54.956252",
+"description": "Inserted into students table, ID: 12"
+},
+{
+"id": 3,
+"actionType": "INSERT",
+"triggeredAt": "2024-10-02T19:04:55.976589",
+"description": "Inserted into students table, ID: 13"
+},
+{
+"id": 4,
+"actionType": "INSERT",
+"triggeredAt": "2024-10-02T19:04:57.3645",
+"description": "Inserted into students table, ID: 14"
+},
+{
+"id": 5,
+"actionType": "INSERT",
+"triggeredAt": "2024-10-02T19:10:38.555522",
+"description": "Inserted into students table, ID: 15"
+}
+]
