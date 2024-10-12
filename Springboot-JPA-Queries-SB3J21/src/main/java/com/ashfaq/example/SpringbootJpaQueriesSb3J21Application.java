@@ -6,27 +6,28 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.ashfaq.example.join.model.Author;
 import com.ashfaq.example.join.model.AuthorRepository;
-import com.ashfaq.example.join.model.Book;
 import com.ashfaq.example.join.model.BookRepository;
 import com.ashfaq.example.repo.EmployeeRepository;
 
 import jakarta.persistence.EntityManager;
 
 @SpringBootApplication
+@EnableJpaAuditing // Enabling auditing here
 public class SpringbootJpaQueriesSb3J21Application {
 
 	
 	@Bean
 	public CommandLineRunner run(EmployeeRepository employeeRepository, EntityManager entityManager) {
 	    return args -> {
-	    	System.out.println("Employee Queries started");
-	        employeeRepository.updateDepartmentByName("John Doe", "IT");
-	        employeeRepository.deleteByName("Jane Doe"); 
-	    	System.out.println("Employee Queries ended");
-
+//	    	System.out.println("Employee Queries started");
+//	        employeeRepository.updateDepartmentByName("John Doe", "IT");
+//	        employeeRepository.deleteByName("Jane Doe"); 
+//	    	System.out.println("Employee Queries ended");
+//Commenting out
 	       
 	    };
 	}
@@ -48,7 +49,7 @@ public class SpringbootJpaQueriesSb3J21Application {
 //	            books.forEach(book -> System.out.println("Book: " + book.getTitle()));
 	            
 	            
-		    	System.out.println("Join Queries ended");
+//		    	System.out.println("Join Queries ended");
 		    	
 //		    	
 //		    	Join Queries started
