@@ -1,3 +1,9 @@
+#Common Properties :
+
+![image](https://github.com/user-attachments/assets/ea30df22-a752-40dd-ae69-222c67d7d99f)
+
+
+
 ## Understanding db/jpa properties in springboot
 
 ```
